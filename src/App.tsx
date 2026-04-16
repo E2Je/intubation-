@@ -59,8 +59,8 @@ export default function App() {
       <main className="flex-1 overflow-hidden px-3 pt-2 flex flex-col min-h-0">
         <SectionList />
 
-        {/* Intubation start banner */}
-        {currentSection === 0 && !intubationStarted && (
+        {/* Intubation start banner - shown after equipment section */}
+        {currentSection === 1 && !intubationStarted && (
           <div className="flex-shrink-0">
             <IntubationStartBanner />
           </div>
@@ -82,7 +82,7 @@ export default function App() {
       {/* ── Bottom FAB bar ────────────────────────────────────── */}
       <div className="flex-shrink-0 flex items-center justify-between px-3 py-3 bg-slate-900 border-t border-slate-800">
         <MedicationFAB />
-        <p className="text-slate-600 text-xs">גרסה 8296/0 · 03.26</p>
+        <p className="text-slate-500 text-xs text-center leading-tight">©איתמר גרינברג<br/>וצוות החייאה: תמי לוי וגפן הלל</p>
         <HardAirwayFAB />
       </div>
 

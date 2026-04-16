@@ -100,7 +100,7 @@ export const useChecklistStore = create<ChecklistState>((set) => ({
   toggleSessionLog: () => set((s) => ({ sessionLogOpen: !s.sessionLogOpen, medDrawerOpen: false, hardAirwayOpen: false })),
 
   startIntubation: () =>
-    set({ intubationStarted: true, intubationStartTime: Date.now(), lmaModalOpen: false, currentSection: 1, currentItemIndex: 0 }),
+    set({ intubationStarted: true, intubationStartTime: Date.now(), lmaModalOpen: false, currentSection: 2, currentItemIndex: 0 }),
 
   endSession: () => set({ sessionEndTime: Date.now(), sessionLogOpen: true }),
 
