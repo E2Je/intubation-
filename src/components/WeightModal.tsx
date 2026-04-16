@@ -32,7 +32,7 @@ export function WeightModal() {
           <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden bg-slate-100 dark:bg-slate-800">
             {!logoError ? (
               <img
-                src={`${import.meta.env.BASE_URL}logo.png`}
+                src={`${import.meta.env.BASE_URL}logo.jpg`}
                 alt="לוגו"
                 className="w-full h-full object-contain"
                 onError={() => setLogoError(true)}
