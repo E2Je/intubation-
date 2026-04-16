@@ -72,13 +72,13 @@ function HardAirwayRow({ item, isExpanded, status, onToggle, onStatus }: HardAir
       {isExpanded && (
         <div className="px-3 pb-4 flex flex-col gap-3">
           {item.img && !imgError ? (
-            <div className="w-full rounded-2xl overflow-hidden" style={{ maxHeight: '38vh' }}>
+            <div className="w-full rounded-2xl overflow-hidden" style={{ maxHeight: '26vh' }}>
               <img
                 key={item.id}
                 src={assetUrl(item.img)}
                 alt={item.label}
                 className="w-full object-cover"
-                style={{ maxHeight: '38vh' }}
+                style={{ maxHeight: '26vh' }}
                 onError={() => setImgError(true)}
               />
             </div>

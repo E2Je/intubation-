@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useChecklistStore } from './store/checklistStore';
 import { CHECKLIST_SECTIONS } from './data/protocol';
 
@@ -17,8 +18,10 @@ export default function App() {
   const {
     weight, currentSection, intubationStarted,
     toggleSessionLog, sessionLogOpen, endSession,
-    isDark, toggleTheme,
+    isDark, toggleTheme, resetSession,
   } = useChecklistStore();
+
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
 
   const section = CHECKLIST_SECTIONS[currentSection];
   const isLastSection = currentSection === CHECKLIST_SECTIONS.length - 1;
@@ -29,7 +32,6 @@ export default function App() {
 
         {/* ── Header ──────────────────────────────────────────── */}
         <header className="flex-shrink-0 px-3 pt-3 pb-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-          {/* Top row: branding + action buttons */}
           <div className="flex items-center justify-between mb-2 gap-2">
             {/* Branding */}
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -65,6 +67,12 @@ export default function App() {
                 }`}
               >
                 📋 לוג
+              </button>
+              <button
+                onClick={() => setResetConfirmOpen(true)}
+                className="text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
+              >
+                🔄
               </button>
             </div>
           </div>
@@ -112,6 +120,32 @@ export default function App() {
         <HardAirwayOverlay />
         <SessionLog />
         <SectionWarningModal />
+
+        {/* ── Reset confirm modal ───────────────────────────────── */}
+        {resetConfirmOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 w-full max-w-xs shadow-2xl">
+              <h3 className="text-slate-900 dark:text-white font-bold text-lg text-center mb-2">התחלת סשן חדש</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm text-center mb-6 leading-relaxed">
+                כל המידע הקודם ימחק ולא ניתן לשחזר אותו.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setResetConfirmOpen(false)}
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 rounded-2xl transition-all text-sm"
+                >
+                  ביטול
+                </button>
+                <button
+                  onClick={() => { setResetConfirmOpen(false); resetSession(); }}
+                  className="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-2xl transition-all text-sm"
+                >
+                  מסכים/ה
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

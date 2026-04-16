@@ -77,12 +77,12 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
         <div className="px-3 pb-4 flex flex-col gap-3">
           {/* Image */}
           {item.img && !imgError ? (
-            <div className="w-full rounded-2xl overflow-hidden" style={{ maxHeight: '42vh' }}>
+            <div className="w-full rounded-2xl overflow-hidden" style={{ maxHeight: '26vh' }}>
               <img
                 src={assetUrl(item.img)}
                 alt={item.label}
                 className="w-full object-cover"
-                style={{ maxHeight: '42vh' }}
+                style={{ maxHeight: '26vh' }}
                 onError={() => setImgError(true)}
               />
             </div>
