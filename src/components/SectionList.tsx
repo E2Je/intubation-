@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { ChecklistItem, ItemStatus } from '../data/protocol';
 import { CHECKLIST_SECTIONS } from '../data/protocol';
 import { useChecklistStore } from '../store/checklistStore';
+import { playClick } from '../utils/sound';
 
 const STATUS_DOT: Record<ItemStatus, string> = {
   pending:      'bg-slate-600',
@@ -92,21 +93,21 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
               color="bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700"
               active={status === 'done'}
               activeRing="ring-emerald-400"
-              onClick={() => onStatus(item.id, 'done')}
+              onClick={() => { playClick('done'); onStatus(item.id, 'done'); }}
             />
             <ActionBtn
               label="לא בוצע"
               color="bg-rose-600 hover:bg-rose-500 active:bg-rose-700"
               active={status === 'skipped'}
               activeRing="ring-rose-400"
-              onClick={() => onStatus(item.id, 'skipped')}
+              onClick={() => { playClick('skipped'); onStatus(item.id, 'skipped'); }}
             />
             <ActionBtn
               label="לא רלוונטי"
               color="bg-sky-600 hover:bg-sky-500 active:bg-sky-700"
               active={status === 'not_relevant'}
               activeRing="ring-sky-400"
-              onClick={() => onStatus(item.id, 'not_relevant')}
+              onClick={() => { playClick('not_relevant'); onStatus(item.id, 'not_relevant'); }}
             />
           </div>
         </div>

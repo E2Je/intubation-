@@ -1,7 +1,8 @@
 import { useChecklistStore } from '../store/checklistStore';
 import { HARD_AIRWAY_ITEMS } from '../data/protocol';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ItemStatus } from '../data/protocol';
+import { playClick } from '../utils/sound';
 
 const STATUS_LABEL: Record<ItemStatus, string> = {
   pending: '', done: 'בוצע', skipped: 'לא בוצע', not_relevant: 'לא רלוונטי',
@@ -12,16 +13,23 @@ export function HardAirwayOverlay() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [imgError, setImgError] = useState(false);
 
+  // Reset imgError whenever the active item changes
+  useEffect(() => { setImgError(false); }, [activeIdx]);
+
   if (!hardAirwayOpen) return null;
 
   const item = HARD_AIRWAY_ITEMS[activeIdx];
   const status = itemStatuses[item.id] ?? 'pending';
 
   const handleStatus = (s: ItemStatus) => {
+    playClick(s === 'pending' ? 'nav' : s);
     setStatus(item.id, s);
     const next = HARD_AIRWAY_ITEMS[activeIdx + 1];
     if (next) setActiveIdx(activeIdx + 1);
   };
+
+  const goNext = () => { playClick('nav'); setActiveIdx(i => Math.min(HARD_AIRWAY_ITEMS.length - 1, i + 1)); };
+  const goPrev = () => { playClick('nav'); setActiveIdx(i => Math.max(0, i - 1)); };
 
   return (
     <div className="fixed inset-0 z-40 bg-slate-950/95 backdrop-blur-sm flex flex-col">
@@ -35,7 +43,7 @@ export function HardAirwayOverlay() {
           </div>
         </div>
         <button
-          onClick={toggleHardAirway}
+          onClick={() => { playClick('nav'); toggleHardAirway(); }}
           className="bg-slate-700 hover:bg-slate-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold"
         >
           ✕
@@ -49,7 +57,7 @@ export function HardAirwayOverlay() {
           return (
             <button
               key={it.id}
-              onClick={() => setActiveIdx(idx)}
+              onClick={() => { playClick('nav'); setActiveIdx(idx); }}
               className={`flex-1 py-2 px-2 rounded-xl text-xs font-semibold transition-all text-center ${
                 activeIdx === idx ? 'bg-red-700 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
               }`}
@@ -68,6 +76,7 @@ export function HardAirwayOverlay() {
         {item.img && !imgError ? (
           <div className="w-full rounded-2xl overflow-hidden" style={{ maxHeight: '38vh' }}>
             <img
+              key={item.id}
               src={`/assets/${encodeURIComponent(item.img)}`}
               alt={item.label}
               className="w-full object-cover"
@@ -104,14 +113,14 @@ export function HardAirwayOverlay() {
       {/* Navigation */}
       <div className="flex gap-3 px-4 pb-4 flex-shrink-0">
         <button
-          onClick={() => setActiveIdx(i => Math.min(HARD_AIRWAY_ITEMS.length - 1, i + 1))}
+          onClick={goNext}
           disabled={activeIdx === HARD_AIRWAY_ITEMS.length - 1}
           className="flex-1 min-h-[56px] bg-slate-700 hover:bg-slate-600 disabled:opacity-30 text-white font-bold rounded-2xl transition-all"
         >
           הבא
         </button>
         <button
-          onClick={() => setActiveIdx(i => Math.max(0, i - 1))}
+          onClick={goPrev}
           disabled={activeIdx === 0}
           className="flex-1 min-h-[56px] bg-slate-700 hover:bg-slate-600 disabled:opacity-30 text-white font-bold rounded-2xl transition-all"
         >
