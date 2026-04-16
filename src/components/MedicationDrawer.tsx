@@ -2,32 +2,42 @@ import { useChecklistStore } from '../store/checklistStore';
 import { MED_SECTIONS } from '../data/protocol';
 import type { MedItem } from '../data/protocol';
 
-function calcDose(dosageStr: string, weight: number): string {
+/** Returns formatted dose string with unit, e.g. "18.0mg - 22.0mg" or "36.0mg" */
+function formatDose(dosageStr: string, weight: number, unit: string): string {
+  const u = unit.split('/')[0]; // "mg" or "mcg"
   if (dosageStr.includes('-')) {
     const [lo, hi] = dosageStr.split('-').map(Number);
-    return `${(lo * weight).toFixed(1)} - ${(hi * weight).toFixed(1)}`;
+    return `${(lo * weight).toFixed(1)}${u} - ${(hi * weight).toFixed(1)}${u}`;
   }
-  return (parseFloat(dosageStr) * weight).toFixed(1);
+  return `${(parseFloat(dosageStr) * weight).toFixed(1)}${u}`;
 }
 
 function MedRow({ item, weight, isAdult }: { item: MedItem; weight: number; isAdult: boolean }) {
   const dosage = isAdult ? item.adult_dosage : item.pediatric_dosage;
-  const calculated = calcDose(dosage, weight);
+  const doseStr = formatDose(dosage, weight, item.unit);
 
   return (
     <div className="bg-slate-100 dark:bg-slate-800/80 rounded-2xl p-4">
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-slate-900 dark:text-white font-bold text-base">{item.label}</span>
-        <div className="text-right">
-          <span className="text-emerald-600 dark:text-emerald-400 font-bold text-lg">{calculated}</span>
-          <span className="text-slate-500 dark:text-slate-400 text-sm ml-1">{item.unit.split('/')[0]}</span>
-        </div>
+      {/* Drug name + calculated dose */}
+      <div className="flex items-center justify-between mb-2 gap-2">
+        <span className="text-slate-900 dark:text-white font-bold text-base flex-1 text-right">
+          {item.label}
+        </span>
+        {/* dir=ltr forces left-to-right number reading: 18.0mg - 22.0mg */}
+        <span
+          dir="ltr"
+          className="text-emerald-600 dark:text-emerald-400 font-bold text-lg font-mono whitespace-nowrap"
+        >
+          {doseStr}
+        </span>
       </div>
-      <div className="flex justify-between text-xs text-slate-500 dark:text-slate-500">
-        <span>מינון: {dosage} {item.unit}</span>
-        <span>× {weight} ק"ג</span>
+      {/* Per-kg info */}
+      <div dir="ltr" className="text-xs text-slate-500 dark:text-slate-500 text-left">
+        {dosage} {item.unit} × {weight} ק"ג
       </div>
-      <p className="text-rose-500 dark:text-rose-400 text-xs mt-2 leading-tight">{item.warning_note}</p>
+      <p className="text-rose-500 dark:text-rose-400 text-xs mt-2 leading-tight text-right">
+        {item.warning_note}
+      </p>
     </div>
   );
 }
