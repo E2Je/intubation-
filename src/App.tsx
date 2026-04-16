@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useChecklistStore } from './store/checklistStore';
+import { useVersionCheck } from './hooks/useVersionCheck';
+import { UpdateBanner } from './components/UpdateBanner';
 import { CHECKLIST_SECTIONS } from './data/protocol';
 
 import { WeightModal } from './components/WeightModal';
@@ -22,6 +24,8 @@ export default function App() {
   } = useChecklistStore();
 
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+  const updateAvailable = useVersionCheck();
 
   const section = CHECKLIST_SECTIONS[currentSection];
   const isLastSection = currentSection === CHECKLIST_SECTIONS.length - 1;
@@ -112,6 +116,14 @@ export default function App() {
             ©איתמר גרינברג · וצוות החייאה: תמי לוי וגפן הלל
           </p>
         </div>
+
+        {/* ── Update banner ───────────────────────────────────── */}
+        {updateAvailable && !bannerDismissed && (
+          <UpdateBanner
+            onReload={() => window.location.reload()}
+            onDismiss={() => setBannerDismissed(true)}
+          />
+        )}
 
         {/* ── Overlays ─────────────────────────────────────────── */}
         <WeightModal />
