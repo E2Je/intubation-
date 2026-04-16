@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useChecklistStore } from '../store/checklistStore';
 
 export function WeightModal() {
-  const { weightModalOpen, weight: savedWeight, setWeight, setIsAdult, isAdult, closeWeightModal } = useChecklistStore();
+  const { weightModalOpen, weight: savedWeight, setWeight, setIsAdult, isAdult, closeWeightModal, isDark, toggleTheme } = useChecklistStore();
   const isUpdate = savedWeight !== null;
   const [input, setInput] = useState(savedWeight ? String(savedWeight) : '');
   const [error, setError] = useState('');
+  const [logoError, setLogoError] = useState(false);
 
   if (!weightModalOpen) return null;
 
@@ -25,11 +26,20 @@ export function WeightModal() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-8 w-full max-w-sm mx-4 shadow-2xl">
+      <div className="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-8 w-full max-w-sm mx-4 shadow-2xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
-            🏥
+          <div className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden bg-slate-100 dark:bg-slate-800">
+            {!logoError ? (
+              <img
+                src={`${import.meta.env.BASE_URL}logo.png`}
+                alt="לוגו"
+                className="w-full h-full object-contain"
+                onError={() => setLogoError(true)}
+              />
+            ) : (
+              <span className="text-3xl">🏥</span>
+            )}
           </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             {isUpdate ? 'עדכון משקל' : 'רשימת תיוג - אינטובציה'}
@@ -77,6 +87,13 @@ export function WeightModal() {
           className="w-full mt-6 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xl font-bold py-4 rounded-2xl transition-all"
         >
           {isUpdate ? 'עדכן משקל' : "התחל צ'קליסט"}
+        </button>
+
+        <button
+          onClick={toggleTheme}
+          className="absolute top-4 left-4 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 text-xl transition-all"
+        >
+          {isDark ? '☀️' : '🌙'}
         </button>
       </div>
     </div>

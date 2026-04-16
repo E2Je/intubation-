@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { ChecklistItem, ItemStatus } from '../data/protocol';
 import { CHECKLIST_SECTIONS } from '../data/protocol';
 import { useChecklistStore } from '../store/checklistStore';
@@ -38,9 +38,19 @@ interface AccordionItemProps {
 
 function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: AccordionItemProps) {
   const [imgError, setImgError] = useState(false);
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isExpanded && itemRef.current) {
+      const t = setTimeout(() => {
+        itemRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 60);
+      return () => clearTimeout(t);
+    }
+  }, [isExpanded]);
 
   return (
-    <div className={`rounded-2xl overflow-hidden border-r-4 transition-all ${STATUS_ROW_BORDER[status]} bg-white dark:bg-slate-800/70 shadow-sm dark:shadow-none`}>
+    <div ref={itemRef} className={`rounded-2xl overflow-hidden border-r-4 transition-all ${STATUS_ROW_BORDER[status]} bg-white dark:bg-slate-800/70 shadow-sm dark:shadow-none`}>
       {/* Row header — always visible */}
       <button
         onClick={onToggle}
