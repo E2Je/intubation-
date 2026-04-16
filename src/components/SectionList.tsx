@@ -39,14 +39,14 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
   const [imgError, setImgError] = useState(false);
 
   return (
-    <div className={`rounded-2xl overflow-hidden border-r-4 transition-all ${STATUS_ROW_BORDER[status]} bg-slate-800/70`}>
+    <div className={`rounded-2xl overflow-hidden border-r-4 transition-all ${STATUS_ROW_BORDER[status]} bg-white dark:bg-slate-800/70 shadow-sm dark:shadow-none`}>
       {/* Row header — always visible */}
       <button
         onClick={onToggle}
         className="w-full flex items-center gap-3 px-4 py-4 text-right"
       >
         <div className={`w-3 h-3 rounded-full flex-shrink-0 transition-colors ${STATUS_DOT[status]}`} />
-        <span className="flex-1 text-white font-semibold text-base leading-snug">{item.label}</span>
+        <span className="flex-1 text-slate-900 dark:text-white font-semibold text-base leading-snug">{item.label}</span>
         {status !== 'pending' && (
           <span className={`text-xs font-medium px-2 py-1 rounded-lg ${
             status === 'done'         ? 'bg-emerald-900/60 text-emerald-300' :
@@ -56,7 +56,7 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
             {STATUS_LABEL[status]}
           </span>
         )}
-        <span className={`text-slate-500 text-sm transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
+        <span className={`text-slate-400 dark:text-slate-500 text-sm transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
           ▼
         </span>
       </button>
@@ -76,14 +76,14 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
               />
             </div>
           ) : (
-            <div className="w-full rounded-2xl bg-slate-700 flex items-center justify-center" style={{ height: '120px' }}>
+            <div className="w-full rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center" style={{ height: '120px' }}>
               <span className="text-slate-400 text-4xl">📋</span>
             </div>
           )}
 
           {/* Clinical note */}
-          <div className="bg-slate-900/70 rounded-xl px-4 py-2">
-            <p className="text-slate-300 text-sm leading-relaxed text-center">{item.clinical_note}</p>
+          <div className="bg-slate-50 dark:bg-slate-900/70 rounded-xl px-4 py-2 border border-slate-100 dark:border-transparent">
+            <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed text-center">{item.clinical_note}</p>
           </div>
 
           {/* Action buttons */}

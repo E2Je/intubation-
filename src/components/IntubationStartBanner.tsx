@@ -20,7 +20,7 @@ export function IntubationStartBanner() {
       >
         🚨 התחלת אינטובציה
       </button>
-      <p className="text-slate-500 text-xs text-center mt-2">
+      <p className="text-slate-500 dark:text-slate-500 text-xs text-center mt-2">
         לחץ לפני תחילת הליך האינטובציה
       </p>
     </div>

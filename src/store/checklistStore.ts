@@ -37,6 +37,9 @@ interface ChecklistState {
   intubationStartTime: number | null;
   sessionEndTime: number | null;
 
+  // Theme
+  isDark: boolean;
+
   // Actions
   setWeight: (w: number) => void;
   setIsAdult: (v: boolean) => void;
@@ -58,6 +61,7 @@ interface ChecklistState {
   startIntubation: () => void;
   endSession: () => void;
   resetSession: () => void;
+  toggleTheme: () => void;
 }
 
 export const useChecklistStore = create<ChecklistState>((set) => ({
@@ -81,6 +85,8 @@ export const useChecklistStore = create<ChecklistState>((set) => ({
   intubationStartTime: null,
   sessionEndTime: null,
 
+  isDark: true,
+
   setWeight: (w) => set({ weight: w }),
   setIsAdult: (v) => set({ isAdult: v }),
   closeWeightModal: () => set({ weightModalOpen: false }),
@@ -103,6 +109,7 @@ export const useChecklistStore = create<ChecklistState>((set) => ({
     set({ intubationStarted: true, intubationStartTime: Date.now(), lmaModalOpen: false, currentSection: 2, currentItemIndex: 0 }),
 
   endSession: () => set({ sessionEndTime: Date.now(), sessionLogOpen: true }),
+  toggleTheme: () => set((s) => ({ isDark: !s.isDark })),
 
   resetSession: () =>
     set({

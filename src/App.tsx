@@ -16,82 +16,95 @@ export default function App() {
   const {
     weight, currentSection, intubationStarted,
     toggleSessionLog, sessionLogOpen, endSession,
+    isDark, toggleTheme,
   } = useChecklistStore();
 
   const section = CHECKLIST_SECTIONS[currentSection];
   const isLastSection = currentSection === CHECKLIST_SECTIONS.length - 1;
 
   return (
-    <div className="flex flex-col bg-slate-950 overflow-hidden" style={{ height: '100dvh' }}>
-      {/* ── Header ──────────────────────────────────────────── */}
-      <header className="flex-shrink-0 px-3 pt-3 pb-2 bg-slate-900 border-b border-slate-800">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <span className="text-blue-400 font-bold text-sm">הדסה</span>
-            <span className="text-slate-600 text-sm">|</span>
-            <span className="text-slate-300 text-sm font-medium">אינטובציה</span>
+    <div className={isDark ? 'dark' : ''} style={{ height: '100dvh' }}>
+      <div className="flex flex-col bg-white dark:bg-slate-950 overflow-hidden h-full">
+
+        {/* ── Header ──────────────────────────────────────────── */}
+        <header className="flex-shrink-0 px-3 pt-3 pb-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-blue-500 dark:text-blue-400 font-bold text-sm">הדסה</span>
+              <span className="text-slate-300 dark:text-slate-600 text-sm">|</span>
+              <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">אינטובציה</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {weight && (
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs px-3 py-1.5 rounded-lg font-medium">
+                  {weight} ק"ג
+                </span>
+              )}
+              <button
+                onClick={toggleTheme}
+                className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                title={isDark ? 'עבור למצב בהיר' : 'עבור למצב כהה'}
+              >
+                {isDark ? '☀️' : '🌙'}
+              </button>
+              <button
+                onClick={toggleSessionLog}
+                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
+                  sessionLogOpen
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                📋 לוג
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            {weight && (
-              <span className="bg-slate-800 text-slate-300 text-xs px-3 py-1.5 rounded-lg font-medium">
-                {weight} ק"ג
-              </span>
-            )}
-            <button
-              onClick={toggleSessionLog}
-              className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                sessionLogOpen ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:text-white'
-              }`}
-            >
-              📋 לוג
-            </button>
-          </div>
+          <SectionNav />
+        </header>
+
+        {/* ── Section title ────────────────────────────────────── */}
+        <div className="flex-shrink-0 px-4 py-2 border-b border-slate-100 dark:border-slate-800/60">
+          <h2 className="text-slate-800 dark:text-slate-200 font-bold text-base">{section?.title}</h2>
         </div>
-        <SectionNav />
-      </header>
 
-      {/* ── Section title ────────────────────────────────────── */}
-      <div className="flex-shrink-0 px-4 py-2 border-b border-slate-800/60">
-        <h2 className="text-slate-200 font-bold text-base">{section?.title}</h2>
+        {/* ── Main content: accordion list ─────────────────────── */}
+        <main className="flex-1 overflow-hidden px-3 pt-2 flex flex-col min-h-0">
+          <SectionList />
+
+          {/* Intubation start banner - shown after equipment section */}
+          {currentSection === 1 && !intubationStarted && (
+            <div className="flex-shrink-0">
+              <IntubationStartBanner />
+            </div>
+          )}
+
+          {/* End session button */}
+          {isLastSection && intubationStarted && (
+            <div className="flex-shrink-0 mt-2 mb-2">
+              <button
+                onClick={endSession}
+                className="w-full bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-800 text-white font-bold text-base py-4 rounded-2xl transition-all"
+              >
+                ✓ סיום אינטובציה
+              </button>
+            </div>
+          )}
+        </main>
+
+        {/* ── Bottom FAB bar ────────────────────────────────────── */}
+        <div className="flex-shrink-0 flex items-center justify-between px-3 py-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+          <MedicationFAB />
+          <p className="text-slate-400 dark:text-slate-500 text-xs text-center leading-tight">©איתמר גרינברג<br/>וצוות החייאה: תמי לוי וגפן הלל</p>
+          <HardAirwayFAB />
+        </div>
+
+        {/* ── Overlays ─────────────────────────────────────────── */}
+        <WeightModal />
+        <LMAWarningModal />
+        <MedicationDrawer />
+        <HardAirwayOverlay />
+        <SessionLog />
       </div>
-
-      {/* ── Main content: accordion list ─────────────────────── */}
-      <main className="flex-1 overflow-hidden px-3 pt-2 flex flex-col min-h-0">
-        <SectionList />
-
-        {/* Intubation start banner - shown after equipment section */}
-        {currentSection === 1 && !intubationStarted && (
-          <div className="flex-shrink-0">
-            <IntubationStartBanner />
-          </div>
-        )}
-
-        {/* End session button */}
-        {isLastSection && intubationStarted && (
-          <div className="flex-shrink-0 mt-2 mb-2">
-            <button
-              onClick={endSession}
-              className="w-full bg-emerald-700 hover:bg-emerald-600 active:bg-emerald-800 text-white font-bold text-base py-4 rounded-2xl transition-all"
-            >
-              ✓ סיום אינטובציה
-            </button>
-          </div>
-        )}
-      </main>
-
-      {/* ── Bottom FAB bar ────────────────────────────────────── */}
-      <div className="flex-shrink-0 flex items-center justify-between px-3 py-3 bg-slate-900 border-t border-slate-800">
-        <MedicationFAB />
-        <p className="text-slate-500 text-xs text-center leading-tight">©איתמר גרינברג<br/>וצוות החייאה: תמי לוי וגפן הלל</p>
-        <HardAirwayFAB />
-      </div>
-
-      {/* ── Overlays ─────────────────────────────────────────── */}
-      <WeightModal />
-      <LMAWarningModal />
-      <MedicationDrawer />
-      <HardAirwayOverlay />
-      <SessionLog />
     </div>
   );
 }

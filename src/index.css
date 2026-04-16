@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -13,8 +15,6 @@ html, body, #root {
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
-  background: #0f1117;
-  color: #f1f5f9;
   direction: rtl;
   overflow: hidden;
 }
