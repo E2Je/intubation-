@@ -4,7 +4,7 @@ import { CHECKLIST_SECTIONS } from '../data/protocol';
 const SECTION_SHORT = ['הכנה', 'ציוד', 'אחרי'];
 
 export function SectionNav() {
-  const { currentSection, itemStatuses, setSection, intubationStarted } = useChecklistStore();
+  const { currentSection, itemStatuses, requestSection, intubationStarted } = useChecklistStore();
 
   return (
     <div className="flex gap-2">
@@ -19,7 +19,7 @@ export function SectionNav() {
         return (
           <button
             key={section.id}
-            onClick={() => !isLocked && setSection(idx)}
+            onClick={() => !isLocked && requestSection(idx)}
             disabled={isLocked}
             className={`
               flex-1 flex flex-col items-center py-2 px-1 rounded-xl transition-all text-center

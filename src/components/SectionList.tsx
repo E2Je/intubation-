@@ -3,6 +3,7 @@ import type { ChecklistItem, ItemStatus } from '../data/protocol';
 import { CHECKLIST_SECTIONS } from '../data/protocol';
 import { useChecklistStore } from '../store/checklistStore';
 import { playClick } from '../utils/sound';
+import { assetUrl } from '../utils/assetPath';
 
 const STATUS_DOT: Record<ItemStatus, string> = {
   pending:      'bg-slate-600',
@@ -68,7 +69,7 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
           {item.img && !imgError ? (
             <div className="w-full rounded-2xl overflow-hidden" style={{ maxHeight: '42vh' }}>
               <img
-                src={`/assets/${encodeURIComponent(item.img)}`}
+                src={assetUrl(item.img)}
                 alt={item.label}
                 className="w-full object-cover"
                 style={{ maxHeight: '42vh' }}

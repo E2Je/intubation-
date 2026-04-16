@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useChecklistStore } from '../store/checklistStore';
 
 export function WeightModal() {
-  const { weightModalOpen, setWeight, setIsAdult, isAdult, closeWeightModal } = useChecklistStore();
-  const [input, setInput] = useState('');
+  const { weightModalOpen, weight: savedWeight, setWeight, setIsAdult, isAdult, closeWeightModal } = useChecklistStore();
+  const isUpdate = savedWeight !== null;
+  const [input, setInput] = useState(savedWeight ? String(savedWeight) : '');
   const [error, setError] = useState('');
 
   if (!weightModalOpen) return null;
@@ -30,7 +31,9 @@ export function WeightModal() {
           <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
             🏥
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">רשימת תיוג - אינטובציה</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            {isUpdate ? 'עדכון משקל' : 'רשימת תיוג - אינטובציה'}
+          </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">הדסה | {new Date().toLocaleDateString('he-IL')}</p>
         </div>
 
@@ -73,7 +76,7 @@ export function WeightModal() {
           onClick={handleSubmit}
           className="w-full mt-6 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xl font-bold py-4 rounded-2xl transition-all"
         >
-          התחל צ'קליסט
+          {isUpdate ? 'עדכן משקל' : "התחל צ'קליסט"}
         </button>
       </div>
     </div>

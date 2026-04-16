@@ -1,9 +1,48 @@
 import { useChecklistStore } from '../store/checklistStore';
 import { CHECKLIST_SECTIONS } from '../data/protocol';
+import type { ItemStatus } from '../data/protocol';
 
 function fmt(ts: number | null): string {
   if (!ts) return '-';
   return new Date(ts).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+const STATUS_LABEL: Record<ItemStatus, string> = {
+  pending: 'ממתין', done: 'בוצע', skipped: 'לא בוצע', not_relevant: 'לא רלוונטי',
+};
+
+function buildSummary(
+  itemStatuses: Record<string, ItemStatus>,
+  sessionStartTime: number,
+  intubationStartTime: number | null,
+  sessionEndTime: number | null,
+  weight: number | null,
+): string {
+  const d = (ts: number | null) => ts ? new Date(ts).toLocaleTimeString('he-IL') : '-';
+  const el = (a: number, b: number | null) => {
+    if (!b) return 'בתהליך';
+    const s = Math.floor((b - a) / 1000);
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')} דק'`;
+  };
+  const lines: string[] = [
+    'סיכום אינטובציה - הדסה',
+    `משקל: ${weight ?? '?'} ק"ג`,
+    '',
+    `התחלת הכנה: ${d(sessionStartTime)}`,
+    `התחלת אינטובציה: ${d(intubationStartTime)}`,
+    `סיום: ${d(sessionEndTime)}`,
+    `זמן הכנה: ${el(sessionStartTime, intubationStartTime ?? Date.now())}`,
+    '',
+  ];
+  CHECKLIST_SECTIONS.forEach(section => {
+    lines.push(`=== ${section.title} ===`);
+    section.items.forEach(item => {
+      const s = itemStatuses[item.id] ?? 'pending';
+      lines.push(`[${STATUS_LABEL[s]}] ${item.label}`);
+    });
+    lines.push('');
+  });
+  return lines.join('\n');
 }
 
 function elapsed(start: number, end: number | null): string {
@@ -18,8 +57,17 @@ export function SessionLog() {
   const {
     sessionLogOpen, toggleSessionLog,
     sessionStartTime, intubationStartTime, sessionEndTime,
-    itemStatuses, resetSession,
+    itemStatuses, resetSession, weight,
   } = useChecklistStore();
+
+  const handlePrint = () => window.print();
+
+  const handleEmail = () => {
+    const body = encodeURIComponent(
+      buildSummary(itemStatuses, sessionStartTime, intubationStartTime, sessionEndTime, weight)
+    );
+    window.location.href = `mailto:?subject=${encodeURIComponent('סיכום אינטובציה - הדסה')}&body=${body}`;
+  };
 
   if (!sessionLogOpen) return null;
 
@@ -95,11 +143,25 @@ export function SessionLog() {
         })}
       </div>
 
-      {/* Reset button */}
-      <div className="px-4 pb-6 pt-3 border-t border-slate-200 dark:border-slate-800">
+      {/* Actions */}
+      <div className="px-4 pb-5 pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <div className="flex gap-2">
+          <button
+            onClick={handlePrint}
+            className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 rounded-2xl transition-all text-sm"
+          >
+            🖨️ הדפסה / PDF
+          </button>
+          <button
+            onClick={handleEmail}
+            className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 rounded-2xl transition-all text-sm"
+          >
+            ✉️ שלח במייל
+          </button>
+        </div>
         <button
           onClick={resetSession}
-          className="w-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 active:bg-slate-300 dark:active:bg-slate-800 text-slate-800 dark:text-white font-bold py-4 rounded-2xl transition-all"
+          className="w-full bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold py-3 rounded-2xl transition-all"
         >
           🔄 סשן חדש
         </button>

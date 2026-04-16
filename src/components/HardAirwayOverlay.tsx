@@ -3,6 +3,7 @@ import { HARD_AIRWAY_ITEMS } from '../data/protocol';
 import { useState, useEffect } from 'react';
 import type { ItemStatus } from '../data/protocol';
 import { playClick } from '../utils/sound';
+import { assetUrl } from '../utils/assetPath';
 
 const STATUS_LABEL: Record<ItemStatus, string> = {
   pending: '', done: 'בוצע', skipped: 'לא בוצע', not_relevant: 'לא רלוונטי',
@@ -77,7 +78,7 @@ export function HardAirwayOverlay() {
           <div className="w-full rounded-2xl overflow-hidden" style={{ maxHeight: '38vh' }}>
             <img
               key={item.id}
-              src={`/assets/${encodeURIComponent(item.img)}`}
+              src={assetUrl(item.img)}
               alt={item.label}
               className="w-full object-cover"
               style={{ maxHeight: '38vh' }}
@@ -110,21 +111,21 @@ export function HardAirwayOverlay() {
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation - הקודם right, הבא left (RTL) */}
       <div className="flex gap-3 px-4 pb-4 flex-shrink-0">
-        <button
-          onClick={goNext}
-          disabled={activeIdx === HARD_AIRWAY_ITEMS.length - 1}
-          className="flex-1 min-h-[56px] bg-slate-700 hover:bg-slate-600 disabled:opacity-30 text-white font-bold rounded-2xl transition-all"
-        >
-          הבא
-        </button>
         <button
           onClick={goPrev}
           disabled={activeIdx === 0}
           className="flex-1 min-h-[56px] bg-slate-700 hover:bg-slate-600 disabled:opacity-30 text-white font-bold rounded-2xl transition-all"
         >
           הקודם
+        </button>
+        <button
+          onClick={goNext}
+          disabled={activeIdx === HARD_AIRWAY_ITEMS.length - 1}
+          className="flex-1 min-h-[56px] bg-slate-700 hover:bg-slate-600 disabled:opacity-30 text-white font-bold rounded-2xl transition-all"
+        >
+          הבא
         </button>
       </div>
     </div>

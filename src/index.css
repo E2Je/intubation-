@@ -19,6 +19,13 @@ body {
   overflow: hidden;
 }
 
+/* Print styles */
+@media print {
+  body { overflow: visible !important; direction: rtl; }
+  .no-print { display: none !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
 /* Smooth swipe transitions */
 .slide-enter { transform: translateX(100%); opacity: 0; }
 .slide-enter-active { transform: translateX(0); opacity: 1; transition: all 0.25s ease; }

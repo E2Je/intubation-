@@ -11,6 +11,7 @@ import { MedicationDrawer } from './components/MedicationDrawer';
 import { HardAirwayFAB } from './components/HardAirwayFAB';
 import { HardAirwayOverlay } from './components/HardAirwayOverlay';
 import { SessionLog } from './components/SessionLog';
+import { SectionWarningModal } from './components/SectionWarningModal';
 
 export default function App() {
   const {
@@ -28,31 +29,39 @@ export default function App() {
 
         {/* ── Header ──────────────────────────────────────────── */}
         <header className="flex-shrink-0 px-3 pt-3 pb-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
+          {/* Top row: branding + action buttons */}
+          <div className="flex items-center justify-between mb-2 gap-2">
+            {/* Branding */}
+            <div className="flex items-center gap-2 flex-shrink-0">
               <span className="text-blue-500 dark:text-blue-400 font-bold text-sm">הדסה</span>
               <span className="text-slate-300 dark:text-slate-600 text-sm">|</span>
               <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">אינטובציה</span>
             </div>
-            <div className="flex items-center gap-2">
+
+            {/* Action buttons */}
+            <div className="flex items-center gap-1.5 flex-wrap justify-end">
               {weight && (
-                <span className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs px-3 py-1.5 rounded-lg font-medium">
-                  {weight} ק"ג
-                </span>
+                <button
+                  onClick={() => useChecklistStore.getState().openWeightModal()}
+                  className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs px-2.5 py-1.5 rounded-lg font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                >
+                  {weight} ק"ג ✎
+                </button>
               )}
+              <MedicationFAB compact />
+              <HardAirwayFAB compact />
               <button
                 onClick={toggleTheme}
-                className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                title={isDark ? 'עבור למצב בהיר' : 'עבור למצב כהה'}
+                className="text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
               >
                 {isDark ? '☀️' : '🌙'}
               </button>
               <button
                 onClick={toggleSessionLog}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
+                className={`text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all ${
                   sessionLogOpen
                     ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 📋 לוג
@@ -67,18 +76,16 @@ export default function App() {
           <h2 className="text-slate-800 dark:text-slate-200 font-bold text-base">{section?.title}</h2>
         </div>
 
-        {/* ── Main content: accordion list ─────────────────────── */}
+        {/* ── Main content ─────────────────────── */}
         <main className="flex-1 overflow-hidden px-3 pt-2 flex flex-col min-h-0">
           <SectionList />
 
-          {/* Intubation start banner - shown after equipment section */}
           {currentSection === 1 && !intubationStarted && (
             <div className="flex-shrink-0">
               <IntubationStartBanner />
             </div>
           )}
 
-          {/* End session button */}
           {isLastSection && intubationStarted && (
             <div className="flex-shrink-0 mt-2 mb-2">
               <button
@@ -91,11 +98,11 @@ export default function App() {
           )}
         </main>
 
-        {/* ── Bottom FAB bar ────────────────────────────────────── */}
-        <div className="flex-shrink-0 flex items-center justify-between px-3 py-3 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
-          <MedicationFAB />
-          <p className="text-slate-400 dark:text-slate-500 text-xs text-center leading-tight">©איתמר גרינברג<br/>וצוות החייאה: תמי לוי וגפן הלל</p>
-          <HardAirwayFAB />
+        {/* ── Bottom: copyright only ────────────────────────────── */}
+        <div className="flex-shrink-0 py-2 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+          <p className="text-slate-400 dark:text-slate-600 text-[11px] text-center leading-tight">
+            ©איתמר גרינברג · וצוות החייאה: תמי לוי וגפן הלל
+          </p>
         </div>
 
         {/* ── Overlays ─────────────────────────────────────────── */}
@@ -104,6 +111,7 @@ export default function App() {
         <MedicationDrawer />
         <HardAirwayOverlay />
         <SessionLog />
+        <SectionWarningModal />
       </div>
     </div>
   );
