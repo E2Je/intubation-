@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0f1117;
+  color: #f1f5f9;
+  direction: rtl;
+  overflow: hidden;
+}
+
+/* Smooth swipe transitions */
+.slide-enter { transform: translateX(100%); opacity: 0; }
+.slide-enter-active { transform: translateX(0); opacity: 1; transition: all 0.25s ease; }
+.slide-exit { transform: translateX(-100%); opacity: 0; transition: all 0.25s ease; }
