@@ -31,10 +31,10 @@ export function useVersionCheck() {
       }
     };
 
-    // First check after 1 minute (give user time to start working)
-    const initial = setTimeout(check, 60_000);
-    // Then every 3 minutes
-    const interval = setInterval(check, 3 * 60_000);
+    // First check after 15 seconds
+    const initial = setTimeout(check, 15_000);
+    // Then every 90 seconds
+    const interval = setInterval(check, 90_000);
 
     return () => { clearTimeout(initial); clearInterval(interval); };
   }, []);

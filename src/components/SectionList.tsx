@@ -92,13 +92,13 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
           {item.img && !imgError ? (
             <div
               className="w-full rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-800 flex items-center justify-center"
-              style={{ maxHeight: '38vh' }}
+              style={{ maxHeight: '26vh' }}
             >
               <img
                 src={assetUrl(item.img)}
                 alt={item.label}
                 className="w-full object-contain"
-                style={{ maxHeight: '38vh' }}
+                style={{ maxHeight: '26vh' }}
                 onError={() => setImgError(true)}
               />
             </div>

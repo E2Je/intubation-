@@ -57,26 +57,26 @@ function Calculator() {
         <div className="text-white text-3xl font-light font-mono truncate" dir="ltr">{display}</div>
       </div>
 
-      {/* Buttons 4×5 */}
+      {/* Buttons 4×5 — RTL grid: first DOM child = rightmost column */}
       <div className="grid grid-cols-4 gap-2">
-        {/* Row 1 */}
-        <button onClick={clear}     className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>C</button>
-        <button onClick={toggleSign}className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>+/-</button>
-        <button onClick={percent}   className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>%</button>
+        {/* Row 1: ÷ | % | +/- | C  (op rightmost) */}
         <button onClick={() => chooseOp('÷')} className={`${btnBase} ${op === '÷' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>÷</button>
-        {/* Row 2 */}
-        {['7','8','9'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        <button onClick={percent}    className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>%</button>
+        <button onClick={toggleSign} className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>+/-</button>
+        <button onClick={clear}      className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>C</button>
+        {/* Row 2: × | 9 | 8 | 7 */}
         <button onClick={() => chooseOp('×')} className={`${btnBase} ${op === '×' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>×</button>
-        {/* Row 3 */}
-        {['4','5','6'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        {['9','8','7'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        {/* Row 3: − | 6 | 5 | 4 */}
         <button onClick={() => chooseOp('-')} className={`${btnBase} ${op === '-' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>−</button>
-        {/* Row 4 */}
-        {['1','2','3'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        {['6','5','4'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        {/* Row 4: + | 3 | 2 | 1 */}
         <button onClick={() => chooseOp('+')} className={`${btnBase} ${op === '+' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>+</button>
-        {/* Row 5 */}
-        <button onClick={() => append('0')} className={`${btnBase} col-span-2 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>0</button>
-        <button onClick={() => append('.')} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>.</button>
-        <button onClick={evaluate}          className={`${btnBase} bg-orange-500 text-white`}>=</button>
+        {['3','2','1'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        {/* Row 5: = | . | 0 (span 2) */}
+        <button onClick={evaluate}           className={`${btnBase} bg-orange-500 text-white`}>=</button>
+        <button onClick={() => append('.')}  className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>.</button>
+        <button onClick={() => append('0')}  className={`${btnBase} col-span-2 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>0</button>
       </div>
     </div>
   );
