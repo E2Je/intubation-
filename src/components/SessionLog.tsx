@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useChecklistStore } from '../store/checklistStore';
 import { CHECKLIST_SECTIONS } from '../data/protocol';
 import type { ItemStatus } from '../data/protocol';
+import { TeamPanel } from './TeamPanel';
 
 function fmt(ts: number | null): string {
   if (!ts) return '-';
@@ -97,6 +98,9 @@ export function SessionLog() {
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        {/* Team info panel */}
+        <TeamPanel />
+
         {/* Timestamps */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 space-y-3 shadow-sm dark:shadow-none">
           <h3 className="text-slate-700 dark:text-slate-300 text-sm font-bold">זמנים</h3>
@@ -178,18 +182,19 @@ export function SessionLog() {
             <p className="text-slate-500 dark:text-slate-400 text-sm text-center mb-6 leading-relaxed">
               כל המידע הקודם ימחק ולא ניתן לשחזר אותו.
             </p>
+            {/* RTL: first = right */}
             <div className="flex gap-3">
-              <button
-                onClick={() => setConfirmOpen(false)}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 rounded-2xl transition-all text-sm"
-              >
-                ביטול
-              </button>
               <button
                 onClick={() => { setConfirmOpen(false); resetSession(); }}
                 className="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-2xl transition-all text-sm"
               >
                 מסכים/ה
+              </button>
+              <button
+                onClick={() => setConfirmOpen(false)}
+                className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 rounded-2xl transition-all text-sm"
+              >
+                ביטול
               </button>
             </div>
           </div>

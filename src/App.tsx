@@ -15,7 +15,6 @@ import { HardAirwayFAB } from './components/HardAirwayFAB';
 import { HardAirwayOverlay } from './components/HardAirwayOverlay';
 import { SessionLog } from './components/SessionLog';
 import { SectionWarningModal } from './components/SectionWarningModal';
-import { TeamPanel } from './components/TeamPanel';
 
 export default function App() {
   const {
@@ -91,11 +90,6 @@ export default function App() {
 
         {/* ── Main content ─────────────────────── */}
         <main className="flex-1 overflow-hidden px-3 pt-2 flex flex-col min-h-0">
-          {currentSection === 2 && intubationStarted && (
-            <div className="flex-shrink-0 overflow-y-auto" style={{ maxHeight: '45vh' }}>
-              <TeamPanel />
-            </div>
-          )}
           <SectionList />
 
           {currentSection === 1 && !intubationStarted && (
