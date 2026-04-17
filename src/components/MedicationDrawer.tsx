@@ -1,6 +1,86 @@
+import { useState } from 'react';
 import { useChecklistStore } from '../store/checklistStore';
 import { MED_SECTIONS } from '../data/protocol';
 import type { MedItem } from '../data/protocol';
+
+// ─── Inline Calculator ─────────────────────────────────────────────────────
+
+function Calculator() {
+  const [display, setDisplay] = useState('0');
+  const [pending, setPending] = useState<string | null>(null);
+  const [op, setOp] = useState<string | null>(null);
+  const [justEvaled, setJustEvaled] = useState(false);
+
+  const append = (char: string) => {
+    if (justEvaled) { setDisplay(char === '.' ? '0.' : char); setJustEvaled(false); return; }
+    if (char === '.' && display.includes('.')) return;
+    setDisplay(prev => (prev === '0' && char !== '.') ? char : prev + char);
+  };
+
+  const chooseOp = (o: string) => {
+    setPending(display);
+    setOp(o);
+    setJustEvaled(true);
+  };
+
+  const evaluate = () => {
+    if (!op || pending === null) return;
+    const a = parseFloat(pending), b = parseFloat(display);
+    let result: number;
+    switch (op) {
+      case '+': result = a + b; break;
+      case '-': result = a - b; break;
+      case '×': result = a * b; break;
+      case '÷': result = b !== 0 ? a / b : 0; break;
+      default: return;
+    }
+    const str = parseFloat(result.toFixed(6)).toString();
+    setDisplay(str);
+    setPending(null);
+    setOp(null);
+    setJustEvaled(true);
+  };
+
+  const clear = () => { setDisplay('0'); setPending(null); setOp(null); setJustEvaled(false); };
+  const toggleSign = () => setDisplay(d => d.startsWith('-') ? d.slice(1) : '-' + d);
+  const percent = () => setDisplay(d => String(parseFloat(d) / 100));
+
+  const btnBase = 'h-14 rounded-2xl font-semibold text-lg flex items-center justify-center active:brightness-90 transition-all select-none';
+
+  return (
+    <div className="bg-slate-50 dark:bg-slate-900/80 rounded-2xl p-3 mb-3 border border-slate-200 dark:border-slate-700">
+      {/* Display */}
+      <div className="bg-slate-900 dark:bg-black rounded-xl px-4 py-3 mb-3 text-right overflow-hidden">
+        {op && pending !== null && (
+          <div className="text-slate-500 text-xs mb-0.5 font-mono truncate">{pending} {op}</div>
+        )}
+        <div className="text-white text-3xl font-light font-mono truncate" dir="ltr">{display}</div>
+      </div>
+
+      {/* Buttons 4×5 */}
+      <div className="grid grid-cols-4 gap-2">
+        {/* Row 1 */}
+        <button onClick={clear}     className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>C</button>
+        <button onClick={toggleSign}className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>+/-</button>
+        <button onClick={percent}   className={`${btnBase} bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white`}>%</button>
+        <button onClick={() => chooseOp('÷')} className={`${btnBase} ${op === '÷' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>÷</button>
+        {/* Row 2 */}
+        {['7','8','9'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        <button onClick={() => chooseOp('×')} className={`${btnBase} ${op === '×' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>×</button>
+        {/* Row 3 */}
+        {['4','5','6'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        <button onClick={() => chooseOp('-')} className={`${btnBase} ${op === '-' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>−</button>
+        {/* Row 4 */}
+        {['1','2','3'].map(n => <button key={n} onClick={() => append(n)} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>{n}</button>)}
+        <button onClick={() => chooseOp('+')} className={`${btnBase} ${op === '+' ? 'bg-white text-orange-500' : 'bg-orange-500 text-white'}`}>+</button>
+        {/* Row 5 */}
+        <button onClick={() => append('0')} className={`${btnBase} col-span-2 bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>0</button>
+        <button onClick={() => append('.')} className={`${btnBase} bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white`}>.</button>
+        <button onClick={evaluate}          className={`${btnBase} bg-orange-500 text-white`}>=</button>
+      </div>
+    </div>
+  );
+}
 
 /** Returns formatted dose string with unit, e.g. "18.0mg - 22.0mg" or "36.0mg" */
 function formatDose(dosageStr: string, weight: number, unit: string): string {
@@ -44,6 +124,7 @@ function MedRow({ item, weight, isAdult }: { item: MedItem; weight: number; isAd
 
 export function MedicationDrawer() {
   const { medDrawerOpen, toggleMedDrawer, weight, isAdult, setIsAdult, openWeightModal } = useChecklistStore();
+  const [calcOpen, setCalcOpen] = useState(false);
 
   if (!medDrawerOpen) return null;
 
@@ -61,7 +142,19 @@ export function MedicationDrawer() {
         {/* Header */}
         <div className="flex items-center justify-between px-5 pb-3 border-b border-slate-100 dark:border-slate-800">
           <h3 className="text-slate-900 dark:text-white font-bold text-lg">מחשבון תרופות</h3>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Calculator toggle */}
+            <button
+              onClick={() => setCalcOpen(o => !o)}
+              title="מחשבון"
+              className={`w-9 h-9 rounded-xl flex items-center justify-center text-lg transition-all ${
+                calcOpen
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              🧮
+            </button>
             {/* Adult/Pediatric toggle */}
             <div className="flex bg-slate-100 dark:bg-slate-800 rounded-xl p-0.5">
               <button
@@ -95,8 +188,9 @@ export function MedicationDrawer() {
           </div>
         )}
 
-        {/* Drug list */}
+        {/* Drug list + optional calculator */}
         <div className="overflow-y-auto flex-1 px-4 py-3 space-y-4">
+          {calcOpen && <Calculator />}
           {MED_SECTIONS.map(section => (
             <div key={section.title}>
               <h4 className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 px-1">

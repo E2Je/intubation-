@@ -142,7 +142,7 @@ function AccordionItem({ item, isExpanded, status, onToggle, onStatus }: Accordi
 // ─── Main section list ─────────────────────────────────────────────────────
 
 export function SectionList() {
-  const { currentSection, itemStatuses, setStatus } = useChecklistStore();
+  const { currentSection, itemStatuses, setStatus, setSection } = useChecklistStore();
   const section = CHECKLIST_SECTIONS[currentSection];
   const items = section?.items ?? [];
 
@@ -158,6 +158,15 @@ export function SectionList() {
     const idx = items.findIndex(i => i.id === id);
     const next = items[idx + 1];
     setExpandedId(next?.id ?? null);
+
+    // Auto-advance הכנה (section 0) → ציוד (section 1) when last item is filled
+    if (currentSection === 0 && !next) {
+      const updatedStatuses = { ...itemStatuses, [id]: status };
+      const allFilled = items.every(i => (updatedStatuses[i.id] ?? 'pending') !== 'pending');
+      if (allFilled) {
+        setTimeout(() => setSection(1), 400);
+      }
+    }
   };
 
   return (

@@ -48,19 +48,19 @@ export function SectionWarningModal() {
           })}
         </div>
 
-        {/* Actions */}
+        {/* Actions — RTL: first child = right side */}
         <div className="flex gap-3 px-4 pb-5 pt-3 border-t border-slate-100 dark:border-slate-800">
-          <button
-            onClick={confirmSectionNavigation}
-            className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-4 rounded-2xl transition-all text-sm"
-          >
-            המשך לציוד
-          </button>
           <button
             onClick={closeSectionWarning}
             className="flex-1 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-all text-sm"
           >
             המשך לערוך
+          </button>
+          <button
+            onClick={confirmSectionNavigation}
+            className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-4 rounded-2xl transition-all text-sm"
+          >
+            המשך לציוד
           </button>
         </div>
       </div>

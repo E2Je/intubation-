@@ -22,19 +22,19 @@ export function LMAWarningModal() {
           </p>
         </div>
 
-        {/* Actions */}
+        {/* Actions — RTL: first child = right side */}
         <div className="flex gap-3">
-          <button
-            onClick={closeLmaModal}
-            className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-semibold py-4 rounded-2xl transition-all"
-          >
-            ביטול
-          </button>
           <button
             onClick={startIntubation}
             className="flex-2 bg-red-600 hover:bg-red-500 active:bg-red-700 text-white font-bold py-4 px-6 rounded-2xl transition-all"
           >
             הבנתי - המשך
+          </button>
+          <button
+            onClick={closeLmaModal}
+            className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-semibold py-4 rounded-2xl transition-all"
+          >
+            ביטול
           </button>
         </div>
       </div>

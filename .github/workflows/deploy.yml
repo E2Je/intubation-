@@ -29,10 +29,13 @@ jobs:
         run: npm ci
 
       - name: Build
+        # VITE_APP_VERSION = short git hash, injected into bundle AND version.json
         run: npm run build
+        env:
+          VITE_APP_VERSION: ${{ github.sha }}
 
       - name: Write version file
-        run: echo "{\"v\":\"$(date +%s)\"}" > dist/version.json
+        run: echo "{\"v\":\"${{ github.sha }}\"}" > dist/version.json
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

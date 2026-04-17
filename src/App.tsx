@@ -15,6 +15,7 @@ import { HardAirwayFAB } from './components/HardAirwayFAB';
 import { HardAirwayOverlay } from './components/HardAirwayOverlay';
 import { SessionLog } from './components/SessionLog';
 import { SectionWarningModal } from './components/SectionWarningModal';
+import { TeamPanel } from './components/TeamPanel';
 
 export default function App() {
   const {
@@ -70,13 +71,13 @@ export default function App() {
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
-                📋 לוג
+                📋 סיכום
               </button>
               <button
                 onClick={() => setResetConfirmOpen(true)}
                 className="text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400"
               >
-                🔄
+                🔄 רענון
               </button>
             </div>
           </div>
@@ -90,6 +91,11 @@ export default function App() {
 
         {/* ── Main content ─────────────────────── */}
         <main className="flex-1 overflow-hidden px-3 pt-2 flex flex-col min-h-0">
+          {currentSection === 2 && intubationStarted && (
+            <div className="flex-shrink-0 overflow-y-auto" style={{ maxHeight: '45vh' }}>
+              <TeamPanel />
+            </div>
+          )}
           <SectionList />
 
           {currentSection === 1 && !intubationStarted && (
@@ -141,18 +147,19 @@ export default function App() {
               <p className="text-slate-500 dark:text-slate-400 text-sm text-center mb-6 leading-relaxed">
                 כל המידע הקודם ימחק ולא ניתן לשחזר אותו.
               </p>
+              {/* RTL: first child = right side */}
               <div className="flex gap-3">
-                <button
-                  onClick={() => setResetConfirmOpen(false)}
-                  className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 rounded-2xl transition-all text-sm"
-                >
-                  ביטול
-                </button>
                 <button
                   onClick={() => { setResetConfirmOpen(false); resetSession(); }}
                   className="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-2xl transition-all text-sm"
                 >
                   מסכים/ה
+                </button>
+                <button
+                  onClick={() => setResetConfirmOpen(false)}
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-white font-semibold py-3 rounded-2xl transition-all text-sm"
+                >
+                  ביטול
                 </button>
               </div>
             </div>

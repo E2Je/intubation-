@@ -8,6 +8,8 @@ export default defineConfig({
   server: { port: 5175 },
   define: {
     // Baked into the JS bundle at build time — used to detect stale cache
-    __APP_BUILD__: JSON.stringify(Date.now().toString()),
+    // In CI: VITE_APP_VERSION = github.sha (same value written to version.json)
+    // In dev: 'dev' → version check is skipped entirely
+    __APP_BUILD__: JSON.stringify(process.env.VITE_APP_VERSION ?? 'dev'),
   },
 })

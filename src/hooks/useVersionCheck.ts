@@ -10,8 +10,8 @@ export function useVersionCheck() {
   const alreadyDetected = useRef(false);
 
   useEffect(() => {
-    // Only run in production (GitHub Pages)
-    if (import.meta.env.DEV) return;
+    // 'dev' means local build without VITE_APP_VERSION — skip entirely
+    if (__APP_BUILD__ === 'dev') return;
 
     const check = async () => {
       if (alreadyDetected.current) return;

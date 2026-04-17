@@ -43,6 +43,14 @@ interface ChecklistState {
   // Theme
   isDark: boolean;
 
+  // Team info (section 2)
+  department: string;
+  staffList: { name: string; role: string }[];
+  setDepartment: (v: string) => void;
+  addStaff: () => void;
+  updateStaff: (idx: number, field: 'name' | 'role', value: string) => void;
+  removeStaff: (idx: number) => void;
+
   // Actions
   setWeight: (w: number) => void;
   setIsAdult: (v: boolean) => void;
@@ -95,6 +103,21 @@ export const useChecklistStore = create<ChecklistState>()(
       sessionEndTime: null,
 
       isDark: true,
+
+      department: '',
+      staffList: [
+        { name: '', role: '' },
+        { name: '', role: '' },
+        { name: '', role: '' },
+      ],
+      setDepartment: (v) => set({ department: v }),
+      addStaff: () => set((s) => ({ staffList: [...s.staffList, { name: '', role: '' }] })),
+      updateStaff: (idx, field, value) => set((s) => ({
+        staffList: s.staffList.map((item, i) => i === idx ? { ...item, [field]: value } : item),
+      })),
+      removeStaff: (idx) => set((s) => ({
+        staffList: s.staffList.filter((_, i) => i !== idx),
+      })),
 
       setWeight: (w) => set({ weight: w }),
       setIsAdult: (v) => set({ isAdult: v }),
@@ -185,6 +208,8 @@ export const useChecklistStore = create<ChecklistState>()(
         intubationStartTime: s.intubationStartTime,
         sessionEndTime: s.sessionEndTime,
         isDark: s.isDark,
+        department: s.department,
+        staffList: s.staffList,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
